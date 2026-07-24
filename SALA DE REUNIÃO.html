@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consigaz | Agendamento de Salas - Duque de Caxias</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            consigaz: {
+              blue: '#003399',
+              darkblue: '#002255',
+              red: '#E30613',
+              redhover: '#C0040F',
+              light: '#F4F6F9',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-consigaz-light text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- Header Institucional -->
+  <header class="bg-consigaz-blue text-white shadow-md border-b-4 border-consigaz-red sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <!-- Logo Textual Consigaz -->
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl font-black tracking-wider text-white uppercase">CONSIGAZ</span>
+          <span class="text-xs bg-consigaz-red text-white px-2 py-0.5 rounded font-bold uppercase tracking-widest">Salas</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-6 text-sm font-medium">
+        <div class="hidden md:flex items-center space-x-2 bg-blue-900/50 px-3 py-1.5 rounded-lg border border-white/10">
+          <i data-lucide="map-pin" class="w-4 h-4 text-consigaz-red"></i>
+          <span>Unidade Duque de Caxias</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i data-lucide="user-circle" class="w-5 h-5"></i>
+          <span>Painel do Colaborador</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Painel Lateral: Filtros e Seleção -->
+    <aside class="lg:col-span-4 space-y-6">
+      
+      <!-- Card de Seleção de Data e Sala -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h2 class="text-lg font-bold text-consigaz-darkblue flex items-center space-x-2 mb-4 pb-3 border-b border-slate-100">
+          <i data-lucide="sliders" class="w-5 h-5 text-consigaz-blue"></i>
+          <span>Parâmetros da Reserva</span>
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Seleção de Data -->
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Data da Reunião</label>
+            <div class="relative">
+              <input type="date" id="bookingDate" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-consigaz-blue focus:border-consigaz-blue outline-none text-sm font-medium">
+              <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-3 top-3.5"></i>
+            </div>
+          </div>
+
+          <!-- Seleção de Sala -->
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Sala de Reunião</label>
+            <div class="space-y-2" id="roomSelector">
+              <!-- Renderizado via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalhes da Sala Selecionada -->
+      <div id="roomDetails" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <!-- Renderizado via JS -->
+      </div>
+    </aside>
+
+    <!-- Área Principal: Horários e Agendamento -->
+    <section class="lg:col-span-8 space-y-6">
+      
+      <!-- Grade de Horários -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-2 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-consigaz-darkblue flex items-center space-x-2">
+              <i data-lucide="clock" class="w-5 h-5 text-consigaz-blue"></i>
+              <span>Grade de Horários Disponíveis</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5" id="currentSelectionLabel">Selecione uma data e sala</p>
+          </div>
+          <div class="flex items-center space-x-4 text-xs font-medium">
+            <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> <span>Livre</span></span>
+            <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span> <span>Ocupado</span></span>
+            <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-consigaz-blue inline-block"></span> <span>Selecionado</span></span>
+          </div>
+        </div>
+
+        <!-- Grade de Slots -->
+        <div id="timeGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <!-- Renderizado via JS -->
+        </div>
+
+        <!-- Botão Ação Reserva -->
+        <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+          <button id="openModalBtn" disabled class="bg-consigaz-red hover:bg-consigaz-redhover disabled:bg-slate-200 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-lg text-sm shadow transition-all duration-200 flex items-center space-x-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Confirmar Agendamento</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Agendamentos Confirmados do Dia -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-lg font-bold text-consigaz-darkblue flex items-center space-x-2 mb-4 pb-3 border-b border-slate-100">
+          <i data-lucide="list-checks" class="w-5 h-5 text-consigaz-blue"></i>
+          <span>Agendamentos do Dia (Duque de Caxias)</span>
+        </h3>
+        <div id="bookingList" class="space-y-3">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Modal de Confirmação de Reserva -->
+  <div id="bookingModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="bg-consigaz-blue text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="calendar-check" class="w-5 h-5 text-consigaz-red"></i>
+          <h3 class="font-bold text-base">Nova Reserva de Sala</h3>
+        </div>
+        <button id="closeModalBtn" class="text-white/80 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="bookingForm" class="p-6 space-y-4">
+        <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-xs text-slate-700 space-y-1">
+          <p><strong class="text-consigaz-blue">Unidade:</strong> Duque de Caxias</p>
+          <p><strong class="text-consigaz-blue">Sala:</strong> <span id="modalRoomName"></span></p>
+          <p><strong class="text-consigaz-blue">Data & Horário:</strong> <span id="modalTimeSlot"></span></p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome do Solicitante *</label>
+          <div class="relative">
+            <input type="text" required id="reqUser" placeholder="Digite seu nome completo" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 pl-9 text-sm focus:ring-2 focus:ring-consigaz-blue outline-none">
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Setor / Departamento *</label>
+          <div class="relative">
+            <select required id="reqDept" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 pl-9 text-sm focus:ring-2 focus:ring-consigaz-blue outline-none">
+              <option value="">Selecione o setor...</option>
+              <option value="Pós Venda">Pós Venda</option>
+              <option value="Administrativo">Administrativo</option>
+              <option value="Operações & Logística">Operações & Logística</option>
+              <option value="Manutenção/Instalação">Manutenção/Instalação</option>
+              <option value="Diretoria / Executivo">Diretoria / Executivo</option>
+              <option value="Recursos Humanos">Recursos Humanos</option>
+              <option value="Comercial / Vendas">Comercial / Vendas</option>
+            </select>
+            <i data-lucide="briefcase" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Assunto / Pauta *</label>
+          <div class="relative">
+            <input type="text" required id="reqTitle" placeholder="Ex: Alinhamento Operacional" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 pl-9 text-sm focus:ring-2 focus:ring-consigaz-blue outline-none">
+            <i data-lucide="file-text" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-3 border-t border-slate-100">
+          <button type="button" id="cancelModalBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 font-medium hover:bg-slate-50">Cancelar</button>
+          <button type="submit" class="px-5 py-2 bg-consigaz-red hover:bg-consigaz-redhover text-white rounded-lg text-sm font-semibold shadow flex items-center space-x-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Confirmar Agendamento</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts do Sistema -->
+  <script>
+    // Base de dados das salas (Duque de Caxias)
+    const ROOMS = [
+      { 
+        id: 'predio-novo', 
+        name: 'Sala de Reunião Prédio Novo', 
+        sector: 'Prédio Novo', 
+        resources: ['TV de 85"', 'Som', 'Flipchart'] 
+      },
+      { 
+        id: 'predio-antigo', 
+        name: 'Sala de Reunião Prédio Antigo', 
+        sector: 'Prédio Antigo', 
+        resources: ['Projetor', 'Som', 'Flipchart'] 
+      },
+    ];
+
+    // Slots de horário padrão (08:00 às 18:00)
+    const TIME_SLOTS = [
+      '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
+      '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00', '17:00 - 18:00'
+    ];
+
+    // Estado Global da Aplicação
+    let state = {
+      selectedDate: new Date().toISOString().split('T')[0],
+      selectedRoomId: ROOMS[0].id,
+      selectedSlot: null,
+      bookings: JSON.parse(localStorage.getItem('consigaz_bookings_caxias') || '[]')
+    };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('bookingDate').value = state.selectedDate;
+      renderRoomSelector();
+      renderRoomDetails();
+      renderTimeGrid();
+      renderBookingList();
+      bindEvents();
+      lucide.createIcons();
+    });
+
+    function bindEvents() {
+      document.getElementById('bookingDate').addEventListener('change', (e) => {
+        state.selectedDate = e.target.value;
+        state.selectedSlot = null;
+        updateUI();
+      });
+
+      document.getElementById('openModalBtn').addEventListener('click', openModal);
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+      document.getElementById('bookingForm').addEventListener('submit', handleFormSubmit);
+    }
+
+    function renderRoomSelector() {
+      const container = document.getElementById('roomSelector');
+      container.innerHTML = ROOMS.map(room => {
+        const isSelected = room.id === state.selectedRoomId;
+        return `
+          <button onclick="selectRoom('${room.id}')" class="w-full text-left p-3.5 rounded-lg border transition-all flex items-center justify-between ${
+            isSelected 
+              ? 'border-consigaz-blue bg-blue-50/70 ring-2 ring-consigaz-blue/30 shadow-sm' 
+              : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
+          }">
+            <div class="flex items-center space-x-3">
+              <div class="p-2 rounded-lg ${isSelected ? 'bg-consigaz-blue text-white' : 'bg-slate-200 text-slate-600'}">
+                <i data-lucide="building" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="font-bold text-sm ${isSelected ? 'text-consigaz-blue' : 'text-slate-800'}">${room.name}</p>
+                <p class="text-xs text-slate-500">${room.sector}</p>
+              </div>
+            </div>
+            <i data-lucide="${isSelected ? 'check-circle-2' : 'chevron-right'}" class="w-5 h-5 ${isSelected ? 'text-consigaz-blue' : 'text-slate-400'}"></i>
+          </button>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function selectRoom(roomId) {
+      state.selectedRoomId = roomId;
+      state.selectedSlot = null;
+      renderRoomSelector();
+      renderRoomDetails();
+      updateUI();
+    }
+
+    function renderRoomDetails() {
+      const room = ROOMS.find(r => r.id === state.selectedRoomId);
+      const container = document.getElementById('roomDetails');
+      container.innerHTML = `
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Recursos Disponíveis</h3>
+        <p class="text-sm font-bold text-consigaz-darkblue">${room.name}</p>
+        <div class="flex flex-wrap gap-2 pt-1">
+          ${room.resources.map(res => `
+            <span class="inline-flex items-center space-x-1.5 text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-md border border-slate-200 font-medium">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5 text-consigaz-blue"></i>
+              <span>${res}</span>
+            </span>
+          `).join('')}
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function renderTimeGrid() {
+      const grid = document.getElementById('timeGrid');
+      const room = ROOMS.find(r => r.id === state.selectedRoomId);
+      document.getElementById('currentSelectionLabel').textContent = `${room.name} — ${formatDate(state.selectedDate)}`;
+
+      grid.innerHTML = TIME_SLOTS.map(slot => {
+        const isOccupied = state.bookings.some(b => 
+          b.date === state.selectedDate && 
+          b.roomId === state.selectedRoomId && 
+          b.slot === slot
+        );
+        const isSelected = state.selectedSlot === slot;
+
+        let btnClass = "p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-center space-y-1 transition-all ";
+        if (isOccupied) {
+          btnClass += "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed";
+        } else if (isSelected) {
+          btnClass += "bg-consigaz-blue border-consigaz-blue text-white shadow-md ring-2 ring-blue-300";
+        } else {
+          btnClass += "bg-emerald-50/60 border-emerald-200 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-300";
+        }
+
+        return `
+          <button 
+            ${isOccupied ? 'disabled' : ''} 
+            onclick="selectSlot('${slot}')" 
+            class="${btnClass}">
+            <span class="flex items-center space-x-1">
+              <i data-lucide="${isOccupied ? 'lock' : (isSelected ? 'check-circle' : 'clock')}" class="w-3.5 h-3.5"></i>
+              <span>${slot}</span>
+            </span>
+            <span class="text-[10px] font-normal uppercase">${isOccupied ? 'Ocupado' : (isSelected ? 'Selecionado' : 'Disponível')}</span>
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('openModalBtn').disabled = !state.selectedSlot;
+      lucide.createIcons();
+    }
+
+    function selectSlot(slot) {
+      state.selectedSlot = state.selectedSlot === slot ? null : slot;
+      renderTimeGrid();
+    }
+
+    function renderBookingList() {
+      const container = document.getElementById('bookingList');
+      const dayBookings = state.bookings.filter(b => b.date === state.selectedDate);
+
+      if (dayBookings.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-400 space-y-2">
+            <i data-lucide="calendar-x" class="w-8 h-8 mx-auto text-slate-300"></i>
+            <p class="text-sm">Nenhuma reunião agendada para esta data na unidade.</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = dayBookings.map(b => {
+          const room = ROOMS.find(r => r.id === b.roomId);
+          return `
+            <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-lg hover:border-slate-300 transition-all">
+              <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-bold text-white bg-consigaz-blue px-2 py-0.5 rounded">${b.slot}</span>
+                  <span class="text-xs font-semibold text-slate-600">${room ? room.name : ''}</span>
+                </div>
+                <p class="text-sm font-bold text-slate-800">${b.title}</p>
+                <p class="text-xs text-slate-500">Solicitante: <strong class="text-slate-700">${b.user}</strong> (${b.dept})</p>
+              </div>
+              <button onclick="cancelBooking('${b.id}')" title="Cancelar Agendamento" class="text-slate-400 hover:text-consigaz-red p-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+      lucide.createIcons();
+    }
+
+    function updateUI() {
+      renderTimeGrid();
+      renderBookingList();
+    }
+
+    function openModal() {
+      if (!state.selectedSlot) return;
+      const room = ROOMS.find(r => r.id === state.selectedRoomId);
+      document.getElementById('modalRoomName').textContent = room.name;
+      document.getElementById('modalTimeSlot').textContent = `${formatDate(state.selectedDate)} das ${state.selectedSlot}`;
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+      document.getElementById('bookingForm').reset();
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const newBooking = {
+        id: 'bk_' + Date.now(),
+        date: state.selectedDate,
+        roomId: state.selectedRoomId,
+        slot: state.selectedSlot,
+        user: document.getElementById('reqUser').value,
+        dept: document.getElementById('reqDept').value,
+        title: document.getElementById('reqTitle').value,
+      };
+
+      state.bookings.push(newBooking);
+      localStorage.setItem('consigaz_bookings_caxias', JSON.stringify(state.bookings));
+      
+      state.selectedSlot = null;
+      closeModal();
+      updateUI();
+    }
+
+    function cancelBooking(id) {
+      if (confirm('Deseja realmente cancelar este agendamento?')) {
+        state.bookings = state.bookings.filter(b => b.id !== id);
+        localStorage.setItem('consigaz_bookings_caxias', JSON.stringify(state.bookings));
+        updateUI();
+      }
+    }
+
+    function formatDate(dateStr) {
+      const [year, month, day] = dateStr.split('-');
+      return `${day}/${month}/${year}`;
+    }
+  </script>
+</body>
+</html>
