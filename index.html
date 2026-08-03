@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consigaz | Agendamento de Salas - Duque de Caxias</title>
+  <title>Consigaz | Gestão de Salas - Duque de Caxias</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -38,27 +38,64 @@
         </div>
       </div>
       
-      <div class="flex items-center space-x-6 text-sm font-medium">
+      <div class="flex items-center space-x-4 sm:space-x-6 text-sm font-medium">
+        <!-- Modo TV Kiosk -->
+        <button id="btnOpenKiosk" class="hidden sm:flex items-center space-x-1.5 bg-consigaz-red hover:bg-consigaz-redhover text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow">
+          <i data-lucide="tv" class="w-4 h-4"></i>
+          <span>Modo TV (Porta)</span>
+        </button>
+
         <!-- Relógio em Tempo Real -->
         <div class="flex items-center space-x-2 bg-blue-950/70 px-3.5 py-1.5 rounded-lg border border-blue-400/30 text-emerald-400 font-mono text-xs shadow-inner">
           <i data-lucide="clock" class="w-4 h-4 text-emerald-400 animate-pulse"></i>
           <span id="realtimeClock" class="font-bold tracking-wider">00:00:00</span>
         </div>
 
-        <div class="hidden md:flex items-center space-x-2 bg-blue-900/50 px-3 py-1.5 rounded-lg border border-white/10">
+        <div class="hidden md:flex items-center space-x-2 bg-blue-900/50 px-3 py-1.5 rounded-lg border border-white/10 text-xs">
           <i data-lucide="map-pin" class="w-4 h-4 text-consigaz-red"></i>
-          <span>Unidade Duque de Caxias</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <i data-lucide="user-circle" class="w-5 h-5"></i>
-          <span class="hidden sm:inline">Painel do Colaborador</span>
+          <span>Duque de Caxias</span>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- Dashboard de Métricas -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase text-slate-400">Reuniões Hoje</p>
+          <h3 class="text-2xl font-black text-consigaz-darkblue mt-0.5" id="metricTotalBookings">0</h3>
+        </div>
+        <div class="p-3 bg-blue-50 text-consigaz-blue rounded-lg">
+          <i data-lucide="calendar" class="w-6 h-6"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase text-slate-400">Ocupação do Dia</p>
+          <h3 class="text-2xl font-black text-consigaz-darkblue mt-0.5" id="metricOccupancyRate">0%</h3>
+        </div>
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+          <i data-lucide="pie-chart" class="w-6 h-6"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase text-slate-400">Setor Líder em Reservas</p>
+          <h3 class="text-base font-bold text-consigaz-darkblue mt-1 truncate max-w-[180px]" id="metricTopDept">-</h3>
+        </div>
+        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+          <i data-lucide="award" class="w-6 h-6"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Conteúdo Principal -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
     
     <!-- Painel Lateral: Filtros e Seleção -->
     <aside class="lg:col-span-4 space-y-6">
@@ -70,7 +107,13 @@
 
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Data da Reunião</label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-semibold uppercase text-slate-500">Data da Reunião</label>
+              <div class="flex space-x-1">
+                <button id="btnQuickToday" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-bold transition">Hoje</button>
+                <button id="btnQuickTomorrow" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-bold transition">Amanhã</button>
+              </div>
+            </div>
             <div class="relative">
               <input type="date" id="bookingDate" class="w-full bg-slate-50 border border-slate-300 text-slate-800 rounded-lg px-3 py-2.5 pl-10 focus:ring-2 focus:ring-consigaz-blue focus:border-consigaz-blue outline-none text-sm font-medium">
               <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-3 top-3.5"></i>
@@ -123,7 +166,7 @@
           <div>
             <h2 class="text-xl font-bold text-consigaz-darkblue flex items-center space-x-2">
               <i data-lucide="clock" class="w-5 h-5 text-consigaz-blue"></i>
-              <span>Grade de Horários Disponíveis</span>
+              <span>Grade de Horários</span>
             </h2>
             <p class="text-xs text-slate-500 mt-0.5" id="currentSelectionLabel">Selecione uma data e sala</p>
           </div>
@@ -135,13 +178,30 @@
           </div>
         </div>
 
-        <div id="timeGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+        <!-- Grade Separada por Turnos -->
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
+              <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+              <span>Turno da Manhã</span>
+            </h3>
+            <div id="morningGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+          </div>
 
-        <!-- Seção para inserção de Horário Personalizado -->
-        <div id="customTimeContainer" class="hidden mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
+              <i data-lucide="sunset" class="w-4 h-4 text-orange-500"></i>
+              <span>Turno da Tarde & Personalizado</span>
+            </h3>
+            <div id="afternoonGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+          </div>
+        </div>
+
+        <!-- Horário Personalizado -->
+        <div id="customTimeContainer" class="hidden mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3">
           <h4 class="text-xs font-bold uppercase text-consigaz-blue flex items-center space-x-1.5">
             <i data-lucide="edit-3" class="w-4 h-4"></i>
-            <span>Definir Horário Personalizado</span>
+            <span>Definir Horário Personalizado (Máx. 3 horas)</span>
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -171,7 +231,7 @@
       <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-lg font-bold text-consigaz-darkblue flex items-center space-x-2 mb-4 pb-3 border-b border-slate-100">
           <i data-lucide="list-checks" class="w-5 h-5 text-consigaz-blue"></i>
-          <span>Agendamentos do Dia (Duque de Caxias)</span>
+          <span>Agendamentos do Dia</span>
         </h3>
         <div id="bookingList" class="space-y-3"></div>
       </div>
@@ -179,7 +239,7 @@
 
   </main>
 
-  <!-- Modal de Confirmação -->
+  <!-- Modal de Confirmação de Reserva -->
   <div id="bookingModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full overflow-hidden">
       <div class="bg-consigaz-blue text-white px-6 py-4 flex items-center justify-between">
@@ -242,7 +302,66 @@
     </div>
   </div>
 
-  <!-- SCRIPT FIREBASE & LÓGICA DA APLICAÇÃO -->
+  <!-- Modal de Cancelamento Seguro (ADM / Motivo) -->
+  <div id="cancelModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full overflow-hidden">
+      <div class="bg-slate-800 text-white px-6 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-sm flex items-center space-x-2">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+          <span>Cancelar Agendamento</span>
+        </h3>
+        <button id="closeCancelModalBtn" class="text-white/80 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Motivo do Cancelamento *</label>
+          <textarea id="cancelReason" rows="2" placeholder="Ex: Reunião remarcada / Solicitante ausente" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-slate-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Senha de Autorização (ADM) *</label>
+          <input type="password" id="cancelAdminPassword" placeholder="Digite a senha ADM (padrão: admin123)" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-slate-400">
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button id="btnConfirmCancelModal" class="w-full bg-consigaz-red hover:bg-consigaz-redhover text-white py-2 rounded-lg font-bold text-sm shadow">Confirmar Cancelamento</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal KIOSK / MODO TV DA PORTA -->
+  <div id="kioskModal" class="fixed inset-0 bg-slate-950 text-white hidden z-50 flex flex-col justify-between p-8 sm:p-12">
+    <div class="flex items-center justify-between border-b border-white/10 pb-6">
+      <div>
+        <h1 class="text-3xl font-black text-white uppercase tracking-wider">CONSIGAZ</h1>
+        <p class="text-sm text-slate-400" id="kioskRoomName">Sala de Reunião</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="kioskStatusBadge" class="px-6 py-2.5 rounded-full text-xl font-black uppercase tracking-widest shadow-lg flex items-center space-x-3">
+          <span class="w-4 h-4 rounded-full bg-white animate-ping"></span>
+          <span id="kioskStatusText">LIVRE</span>
+        </div>
+        <button id="btnCloseKiosk" class="bg-white/10 hover:bg-white/20 p-3 rounded-full"><i data-lucide="x" class="w-6 h-6"></i></button>
+      </div>
+    </div>
+
+    <div class="my-auto text-center space-y-6 max-w-4xl mx-auto w-full">
+      <div id="kioskCurrentContent">
+        <p class="text-slate-400 text-lg uppercase font-semibold">Status Atual</p>
+        <h2 id="kioskMeetingTitle" class="text-4xl sm:text-6xl font-black mt-2 text-white">Sala Disponível</h2>
+        <p id="kioskMeetingUser" class="text-xl sm:text-2xl text-slate-300 mt-4">Nenhuma reunião em andamento neste momento.</p>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-slate-400 text-sm gap-4">
+      <div>
+        <p class="font-semibold text-white">Próxima Reunião:</p>
+        <p id="kioskNextMeeting">Nenhuma reunião agendada para as próximas horas.</p>
+      </div>
+      <div class="font-mono text-2xl font-bold text-emerald-400" id="kioskClock">00:00:00</div>
+    </div>
+  </div>
+
+  <!-- FIREBASE & LÓGICA DA APLICAÇÃO -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
@@ -254,9 +373,7 @@
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // ------------------------------------------------------------------
     // CONFIGURAÇÃO DO FIREBASE
-    // ------------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyAG2_wvs4IS3gAFISc4oD92VmRm4KtiRvc",
       authDomain: "sala-de-reuniao-9b5e5.firebaseapp.com",
@@ -266,35 +383,29 @@
       appId: "1:704791537544:web:850a0323b4fd5a9a7afc3d"
     };
 
-    // Inicialização do Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const bookingsCollection = collection(db, "agendamentos_caxias");
 
-    // Constantes
+    // CONSTANTES
     const ROOMS = [
       { id: 'predio-novo', name: 'Sala de Reunião Prédio Novo', sector: 'Prédio Novo', resources: ['TV de 85"', 'Som', 'Flipchart'] },
       { id: 'predio-antigo', name: 'Sala de Reunião Prédio Antigo', sector: 'Prédio Antigo', resources: ['Projetor', 'Som', 'Flipchart'] },
     ];
 
-    const TIME_SLOTS = [
-      '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
-      '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00', '17:00 - 18:00',
-      'CUSTOM'
-    ];
+    const MORNING_SLOTS = ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00'];
+    const AFTERNOON_SLOTS = ['13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00', '17:00 - 18:00', 'CUSTOM'];
 
-    // Estado Global
-    const todayStr = new Date().toISOString().split('T')[0];
+    // ESTADO GLOBAL
     let state = {
-      selectedDate: todayStr,
+      selectedDate: new Date().toISOString().split('T')[0],
       selectedRoomId: ROOMS[0].id,
       selectedSlot: null,
-      bookings: []
+      bookings: [],
+      pendingCancelId: null
     };
 
-    // ------------------------------------------------------------------
-    // HELPER FUNCTIONS & CONTROLE DE TEMPO REAL
-    // ------------------------------------------------------------------
+    // FUNÇÕES AUXILIARES
     function getTodayString() {
       return new Date().toISOString().split('T')[0];
     }
@@ -305,11 +416,13 @@
     }
 
     function timeToMinutes(timeStr) {
+      if(!timeStr) return 0;
       const [h, m] = timeStr.trim().split(':').map(Number);
       return h * 60 + m;
     }
 
     function parseSlotInterval(slotStr) {
+      if(!slotStr || !slotStr.includes('-')) return { startMinutes: 0, endMinutes: 0 };
       const [start, end] = slotStr.split('-').map(s => s.trim());
       return {
         startMinutes: timeToMinutes(start),
@@ -321,7 +434,6 @@
       return Math.max(startA, startB) < Math.min(endA, endB);
     }
 
-    // Verifica conflito de horário apenas com reservas válidas (que ainda não expiraram)
     function checkConflict(date, roomId, startMin, endMin) {
       const dayBookings = state.bookings.filter(b => b.date === date && b.roomId === roomId);
       const isToday = (date === getTodayString());
@@ -329,21 +441,16 @@
 
       return dayBookings.some(b => {
         const interval = parseSlotInterval(b.slot);
-        
-        // Se for hoje e o horário da reserva antiga já passou totalmente, libera a agenda!
-        if (isToday && interval.endMinutes <= currentMin) {
-          return false;
-        }
-
+        if (isToday && interval.endMinutes <= currentMin) return false;
         return isOverlapping(startMin, endMin, interval.startMinutes, interval.endMinutes);
       });
     }
 
-    // Inicialização do App
+    // INICIALIZAÇÃO
     document.addEventListener('DOMContentLoaded', () => {
       const dateInput = document.getElementById('bookingDate');
       dateInput.value = state.selectedDate;
-      dateInput.min = getTodayString(); // Impede seleção de datas passadas no calendário
+      dateInput.min = getTodayString();
 
       document.getElementById('reportStartDate').value = state.selectedDate;
       document.getElementById('reportEndDate').value = state.selectedDate;
@@ -356,14 +463,16 @@
       initFirebaseListener();
     });
 
-    // Relógio digital em tempo real
     function startRealtimeClock() {
       const clockEl = document.getElementById('realtimeClock');
+      const kioskClock = document.getElementById('kioskClock');
+      
       function updateClock() {
         const now = new Date();
-        clockEl.textContent = now.toLocaleTimeString('pt-BR');
+        const timeStr = now.toLocaleTimeString('pt-BR');
+        if(clockEl) clockEl.textContent = timeStr;
+        if (kioskClock) kioskClock.textContent = timeStr;
 
-        // Atualiza a grade se o minuto virar para atualizar slots expirados automaticamente
         if (now.getSeconds() === 0) {
           updateUI();
         }
@@ -372,7 +481,6 @@
       setInterval(updateClock, 1000);
     }
 
-    // Escutador em Tempo Real do Firestore
     function initFirebaseListener() {
       onSnapshot(bookingsCollection, (snapshot) => {
         state.bookings = snapshot.docs.map(doc => ({
@@ -380,8 +488,6 @@
           ...doc.data()
         }));
         updateUI();
-      }, (error) => {
-        console.error("Erro ao conectar ao Firebase Firestore:", error);
       });
     }
 
@@ -392,10 +498,36 @@
         updateUI();
       });
 
+      document.getElementById('btnQuickToday').addEventListener('click', () => {
+        state.selectedDate = getTodayString();
+        document.getElementById('bookingDate').value = state.selectedDate;
+        state.selectedSlot = null;
+        updateUI();
+      });
+
+      document.getElementById('btnQuickTomorrow').addEventListener('click', () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        state.selectedDate = tomorrow.toISOString().split('T')[0];
+        document.getElementById('bookingDate').value = state.selectedDate;
+        state.selectedSlot = null;
+        updateUI();
+      });
+
       document.getElementById('openModalBtn').addEventListener('click', openModal);
       document.getElementById('closeModalBtn').addEventListener('click', closeModal);
       document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
       document.getElementById('bookingForm').addEventListener('submit', handleFormSubmit);
+
+      document.getElementById('closeCancelModalBtn').addEventListener('click', () => {
+        document.getElementById('cancelModal').classList.add('hidden');
+      });
+      document.getElementById('btnConfirmCancelModal').addEventListener('click', confirmCancelBooking);
+
+      document.getElementById('btnOpenKiosk').addEventListener('click', openKiosk);
+      document.getElementById('btnCloseKiosk').addEventListener('click', () => {
+        document.getElementById('kioskModal').classList.add('hidden');
+      });
 
       document.getElementById('customStartTime').addEventListener('input', checkCustomTimeValidity);
       document.getElementById('customEndTime').addEventListener('input', checkCustomTimeValidity);
@@ -423,7 +555,6 @@
 
     window.selectSlot = function(slot) {
       state.selectedSlot = state.selectedSlot === slot ? null : slot;
-      
       const customContainer = document.getElementById('customTimeContainer');
       if (state.selectedSlot === 'CUSTOM') {
         customContainer.classList.remove('hidden');
@@ -432,8 +563,7 @@
         customContainer.classList.add('hidden');
         document.getElementById('openModalBtn').disabled = !state.selectedSlot;
       }
-
-      renderTimeGrid();
+      renderGrids();
     };
 
     function checkCustomTimeValidity() {
@@ -455,27 +585,30 @@
         const isToday = (state.selectedDate === getTodayString());
         const currentMin = getCurrentTimeMinutes();
 
-        // 1. Bloqueia se o início for no passado no dia de hoje
-        if (isToday && startMin <= currentMin) {
+        if (isToday && startMin <= (currentMin + 15)) {
           openModalBtn.disabled = true;
-          errorText.textContent = "Não é possível agendar horários que já passaram!";
+          errorText.textContent = "Agendamentos requerem ao menos 15 minutos de antecedência!";
           errorEl.classList.remove('hidden');
           return;
         }
 
-        // 2. Bloqueia hora de início maior ou igual a término
         if (startMin >= endMin) {
           openModalBtn.disabled = true;
-          errorText.textContent = "A hora de início deve ser menor que a hora de término.";
+          errorText.textContent = "Hora de início deve ser anterior ao término.";
           errorEl.classList.remove('hidden');
           return;
         }
 
-        // 3. Bloqueia se houver conflito de horário
-        const conflict = checkConflict(state.selectedDate, state.selectedRoomId, startMin, endMin);
-        if (conflict) {
+        if ((endMin - startMin) > 180) {
           openModalBtn.disabled = true;
-          errorText.textContent = "Conflito: já existe uma reunião ativa neste horário!";
+          errorText.textContent = "Duração máxima permitida é de 3 horas por agendamento.";
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        if (checkConflict(state.selectedDate, state.selectedRoomId, startMin, endMin)) {
+          openModalBtn.disabled = true;
+          errorText.textContent = "Conflito com outro agendamento ativo!";
           errorEl.classList.remove('hidden');
         } else {
           openModalBtn.disabled = false;
@@ -483,16 +616,6 @@
         }
       }
     }
-
-    window.cancelBooking = async function(id) {
-      if (confirm('Deseja realmente cancelar este agendamento?')) {
-        try {
-          await deleteDoc(doc(db, "agendamentos_caxias", id));
-        } catch (error) {
-          alert('Erro ao cancelar agendamento: ' + error.message);
-        }
-      }
-    };
 
     function renderRoomSelector() {
       const container = document.getElementById('roomSelector');
@@ -538,72 +661,69 @@
       lucide.createIcons();
     }
 
-    function renderTimeGrid() {
-      const grid = document.getElementById('timeGrid');
+    function renderSlotButton(slot) {
+      if (slot === 'CUSTOM') {
+        const isSelected = state.selectedSlot === 'CUSTOM';
+        let btnClass = "p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-center space-y-1 transition-all col-span-2 sm:col-span-1 ";
+        btnClass += isSelected 
+          ? "bg-consigaz-blue border-consigaz-blue text-white shadow-md ring-2 ring-blue-300" 
+          : "bg-amber-50/70 border-amber-200 text-amber-800 hover:bg-amber-100 hover:border-amber-300";
+
+        return `
+          <button onclick="selectSlot('CUSTOM')" class="${btnClass}">
+            <span class="flex items-center space-x-1">
+              <i data-lucide="clock-4" class="w-3.5 h-3.5"></i>
+              <span>Personalizado</span>
+            </span>
+            <span class="text-[10px] font-normal uppercase">${isSelected ? 'Selecionado' : 'Definir Horário'}</span>
+          </button>
+        `;
+      }
+
+      const slotInterval = parseSlotInterval(slot);
+      const isToday = (state.selectedDate === getTodayString());
+      const currentMin = getCurrentTimeMinutes();
+      
+      const isPastSlot = isToday && (slotInterval.startMinutes <= (currentMin + 15));
+      const isOccupied = checkConflict(state.selectedDate, state.selectedRoomId, slotInterval.startMinutes, slotInterval.endMinutes);
+      const isSelected = state.selectedSlot === slot;
+
+      let btnClass = "p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-center space-y-1 transition-all ";
+      let statusLabel = 'Disponível';
+      let isDisabled = false;
+
+      if (isPastSlot) {
+        btnClass += "bg-amber-50/50 border-amber-200 text-amber-600/70 cursor-not-allowed opacity-75";
+        statusLabel = 'Expirado';
+        isDisabled = true;
+      } else if (isOccupied) {
+        btnClass += "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed";
+        statusLabel = 'Ocupado';
+        isDisabled = true;
+      } else if (isSelected) {
+        btnClass += "bg-consigaz-blue border-consigaz-blue text-white shadow-md ring-2 ring-blue-300";
+        statusLabel = 'Selecionado';
+      } else {
+        btnClass += "bg-emerald-50/60 border-emerald-200 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-300";
+      }
+
+      return `
+        <button ${isDisabled ? 'disabled' : ''} onclick="selectSlot('${slot}')" class="${btnClass}">
+          <span class="flex items-center space-x-1">
+            <i data-lucide="${isPastSlot ? 'history' : (isOccupied ? 'lock' : (isSelected ? 'check-circle' : 'clock'))}" class="w-3.5 h-3.5"></i>
+            <span>${slot}</span>
+          </span>
+          <span class="text-[10px] font-normal uppercase">${statusLabel}</span>
+        </button>
+      `;
+    }
+
+    function renderGrids() {
       const room = ROOMS.find(r => r.id === state.selectedRoomId);
       document.getElementById('currentSelectionLabel').textContent = `${room.name} — ${formatDate(state.selectedDate)}`;
 
-      const isToday = (state.selectedDate === getTodayString());
-      const currentMin = getCurrentTimeMinutes();
-
-      grid.innerHTML = TIME_SLOTS.map(slot => {
-        if (slot === 'CUSTOM') {
-          const isSelected = state.selectedSlot === 'CUSTOM';
-          let btnClass = "p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-center space-y-1 transition-all col-span-2 sm:col-span-1 ";
-          btnClass += isSelected 
-            ? "bg-consigaz-blue border-consigaz-blue text-white shadow-md ring-2 ring-blue-300" 
-            : "bg-amber-50/70 border-amber-200 text-amber-800 hover:bg-amber-100 hover:border-amber-300";
-
-          return `
-            <button onclick="selectSlot('CUSTOM')" class="${btnClass}">
-              <span class="flex items-center space-x-1">
-                <i data-lucide="clock-4" class="w-3.5 h-3.5"></i>
-                <span>Personalizado</span>
-              </span>
-              <span class="text-[10px] font-normal uppercase">${isSelected ? 'Selecionado' : 'Definir Horário'}</span>
-            </button>
-          `;
-        }
-
-        const slotInterval = parseSlotInterval(slot);
-        
-        // Regras de Estado do Horário
-        const isPastSlot = isToday && (slotInterval.startMinutes <= currentMin);
-        const isOccupied = checkConflict(state.selectedDate, state.selectedRoomId, slotInterval.startMinutes, slotInterval.endMinutes);
-        const isSelected = state.selectedSlot === slot;
-
-        let btnClass = "p-3 rounded-lg border text-xs font-semibold flex flex-col items-center justify-center space-y-1 transition-all ";
-        let statusLabel = 'Disponível';
-        let isDisabled = false;
-
-        if (isPastSlot) {
-          btnClass += "bg-amber-50/50 border-amber-200 text-amber-600/70 cursor-not-allowed opacity-75";
-          statusLabel = 'Expirado';
-          isDisabled = true;
-        } else if (isOccupied) {
-          btnClass += "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed";
-          statusLabel = 'Ocupado';
-          isDisabled = true;
-        } else if (isSelected) {
-          btnClass += "bg-consigaz-blue border-consigaz-blue text-white shadow-md ring-2 ring-blue-300";
-          statusLabel = 'Selecionado';
-        } else {
-          btnClass += "bg-emerald-50/60 border-emerald-200 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-300";
-        }
-
-        return `
-          <button 
-            ${isDisabled ? 'disabled' : ''} 
-            onclick="selectSlot('${slot}')" 
-            class="${btnClass}">
-            <span class="flex items-center space-x-1">
-              <i data-lucide="${isPastSlot ? 'history' : (isOccupied ? 'lock' : (isSelected ? 'check-circle' : 'clock'))}" class="w-3.5 h-3.5"></i>
-              <span>${slot}</span>
-            </span>
-            <span class="text-[10px] font-normal uppercase">${statusLabel}</span>
-          </button>
-        `;
-      }).join('');
+      document.getElementById('morningGrid').innerHTML = MORNING_SLOTS.map(renderSlotButton).join('');
+      document.getElementById('afternoonGrid').innerHTML = AFTERNOON_SLOTS.map(renderSlotButton).join('');
 
       if (state.selectedSlot !== 'CUSTOM') {
         document.getElementById('openModalBtn').disabled = !state.selectedSlot;
@@ -645,7 +765,7 @@
                 <p class="text-sm font-bold ${isFinished ? 'text-slate-500 line-through' : 'text-slate-800'}">${b.title}</p>
                 <p class="text-xs ${isFinished ? 'text-slate-400' : 'text-slate-500'}">Solicitante: <strong class="${isFinished ? 'text-slate-500' : 'text-slate-700'}">${b.user}</strong> (${b.dept})</p>
               </div>
-              <button onclick="cancelBooking('${b.id}')" title="Cancelar Agendamento" class="text-slate-400 hover:text-consigaz-red p-1.5 rounded-lg hover:bg-red-50 transition-colors">
+              <button onclick="requestCancelBooking('${b.id}')" title="Cancelar Agendamento" class="text-slate-400 hover:text-consigaz-red p-1.5 rounded-lg hover:bg-red-50 transition-colors">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             </div>
@@ -655,9 +775,101 @@
       lucide.createIcons();
     }
 
+    function updateDashboardMetrics() {
+      const todayBookings = state.bookings.filter(b => b.date === getTodayString());
+      document.getElementById('metricTotalBookings').textContent = todayBookings.length;
+
+      const occupancy = Math.min(100, Math.round((todayBookings.length / 18) * 100));
+      document.getElementById('metricOccupancyRate').textContent = `${occupancy}%`;
+
+      if (todayBookings.length === 0) {
+        document.getElementById('metricTopDept').textContent = "-";
+      } else {
+        const deptCounts = {};
+        todayBookings.forEach(b => deptCounts[b.dept] = (deptCounts[b.dept] || 0) + 1);
+        const top = Object.keys(deptCounts).reduce((a, b) => deptCounts[a] > deptCounts[b] ? a : b);
+        document.getElementById('metricTopDept').textContent = top;
+      }
+    }
+
     function updateUI() {
-      renderTimeGrid();
+      renderGrids();
       renderBookingList();
+      updateDashboardMetrics();
+      updateKioskMode();
+    }
+
+    window.requestCancelBooking = function(id) {
+      state.pendingCancelId = id;
+      document.getElementById('cancelReason').value = '';
+      document.getElementById('cancelAdminPassword').value = '';
+      document.getElementById('cancelModal').classList.remove('hidden');
+    };
+
+    async function confirmCancelBooking() {
+      const reason = document.getElementById('cancelReason').value.trim();
+      const password = document.getElementById('cancelAdminPassword').value;
+
+      if (!reason) {
+        alert('Por favor, digite o motivo do cancelamento.');
+        return;
+      }
+      if (password !== 'admin123') {
+        alert('Senha ADM incorreta! Use: admin123');
+        return;
+      }
+
+      try {
+        await deleteDoc(doc(db, "agendamentos_caxias", state.pendingCancelId));
+        document.getElementById('cancelModal').classList.add('hidden');
+      } catch (error) {
+        alert('Erro ao cancelar: ' + error.message);
+      }
+    }
+
+    function openKiosk() {
+      document.getElementById('kioskModal').classList.remove('hidden');
+      updateKioskMode();
+    }
+
+    function updateKioskMode() {
+      const room = ROOMS.find(r => r.id === state.selectedRoomId);
+      document.getElementById('kioskRoomName').textContent = room ? room.name : '';
+
+      const todayBookings = state.bookings.filter(b => b.date === getTodayString() && b.roomId === state.selectedRoomId);
+      const currentMin = getCurrentTimeMinutes();
+
+      const activeMeeting = todayBookings.find(b => {
+        const interval = parseSlotInterval(b.slot);
+        return currentMin >= interval.startMinutes && currentMin < interval.endMinutes;
+      });
+
+      const badge = document.getElementById('kioskStatusBadge');
+      const statusText = document.getElementById('kioskStatusText');
+
+      if (activeMeeting) {
+        badge.className = "px-6 py-2.5 rounded-full text-xl font-black uppercase tracking-widest shadow-lg flex items-center space-x-3 bg-consigaz-red text-white";
+        statusText.textContent = "OCUPADO";
+
+        document.getElementById('kioskMeetingTitle').textContent = activeMeeting.title;
+        document.getElementById('kioskMeetingUser').textContent = `Reunião por: ${activeMeeting.user} (${activeMeeting.dept})`;
+      } else {
+        badge.className = "px-6 py-2.5 rounded-full text-xl font-black uppercase tracking-widest shadow-lg flex items-center space-x-3 bg-emerald-600 text-white";
+        statusText.textContent = "LIVRE";
+
+        document.getElementById('kioskMeetingTitle').textContent = "Sala Disponível";
+        document.getElementById('kioskMeetingUser').textContent = "Nenhuma reunião em andamento neste momento.";
+      }
+
+      const nextMeeting = todayBookings
+        .filter(b => parseSlotInterval(b.slot).startMinutes > currentMin)
+        .sort((a, b) => parseSlotInterval(a.slot).startMinutes - parseSlotInterval(b.slot).startMinutes)[0];
+
+      if (nextMeeting) {
+        document.getElementById('kioskNextMeeting').textContent = `${nextMeeting.slot} — ${nextMeeting.title} (${nextMeeting.user})`;
+      } else {
+        document.getElementById('kioskNextMeeting').textContent = "Nenhuma reunião agendada para as próximas horas.";
+      }
     }
 
     function getSelectedSlotFormatted() {
@@ -694,18 +906,16 @@
       const isToday = (state.selectedDate === getTodayString());
       const currentMin = getCurrentTimeMinutes();
 
-      // Trava de segurança contra horários que já passaram durante o preenchimento do formulário
-      if (isToday && interval.startMinutes <= currentMin) {
-        alert("Este horário já passou! Escolha um horário futuro.");
+      if (isToday && interval.startMinutes <= (currentMin + 15)) {
+        alert("Agendamentos requerem ao menos 15 minutos de antecedência!");
         submitBtn.disabled = false;
         closeModal();
         updateUI();
         return;
       }
 
-      // Trava de segurança final contra sobreposição
       if (checkConflict(state.selectedDate, state.selectedRoomId, interval.startMinutes, interval.endMinutes)) {
-        alert("Atenção: Houve um conflito de horários! Outra pessoa pode ter agendado este horário recentemente.");
+        alert("Atenção: Houve um conflito de horários com outro agendamento!");
         submitBtn.disabled = false;
         closeModal();
         return;
@@ -728,27 +938,19 @@
         document.getElementById('customTimeContainer').classList.add('hidden');
         closeModal();
       } catch (error) {
-        alert("Erro ao salvar agendamento no Firebase: " + error.message);
+        alert("Erro ao salvar no Firebase: " + error.message);
       } finally {
         submitBtn.disabled = false;
       }
     }
 
-    // ------------------------------------------------------------------
-    // GERADOR DE RELATÓRIO DE REUNIÕES (CSV)
-    // ------------------------------------------------------------------
     function generateReportCSV() {
       const startDate = document.getElementById('reportStartDate').value;
       const endDate = document.getElementById('reportEndDate').value;
       const roomFilter = document.getElementById('reportRoomFilter').value;
 
-      if (!startDate || !endDate) {
-        alert('Por favor, selecione as datas de início e fim.');
-        return;
-      }
-
-      if (startDate > endDate) {
-        alert('A data de início não pode ser maior que a data final.');
+      if (!startDate || !endDate || startDate > endDate) {
+        alert('Selecione um período válido.');
         return;
       }
 
@@ -759,11 +961,11 @@
       });
 
       if (filtered.length === 0) {
-        alert('Nenhum agendamento encontrado para o período/sala selecionado.');
+        alert('Nenhum agendamento encontrado para os filtros selecionados.');
         return;
       }
 
-      let csvContent = "\uFEFF"; // UTF-8 BOM
+      let csvContent = "\uFEFF";
       csvContent += "Data;Sala;Horario;Solicitante;Setor;Assunto/Pauta\n";
 
       filtered.forEach(b => {
@@ -776,7 +978,7 @@
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `Relatorio_Reunioes_${startDate}_a_${endDate}.csv`);
+      link.setAttribute('download', `Relatorio_Salas_Consigaz_${startDate}_a_${endDate}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
